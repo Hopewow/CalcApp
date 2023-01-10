@@ -16,10 +16,15 @@ public partial class MainViewModel : ObservableObject
 
     bool first;
 
+    // For handling my button presses.
     [RelayCommand]
     void ButtonHandler(string character)
     {
-        first = (Calculation == "0") ? true : false; 
+        // To check if we should override the number or not.
+        first = (Calculation == "0" || Calculation == "∞") ? true : false;
+        // To set to 0 if we have gotten the result of infinite because it can not be calculated on.
+        Calculation = (first) ? "0" : Calculation; 
+
         switch (character)
         {
             case "+": case "-": case "÷": case "X":
@@ -42,11 +47,11 @@ public partial class MainViewModel : ObservableObject
                 {
                     Calculation += character;
                 }
-                first = false;
                 break;
         }
     }
 
+    // Does some math with DataTable().Compute look it up if you want.
     private void equals()
     {
         if (Calculation.EndsWith("÷") ||
@@ -60,6 +65,7 @@ public partial class MainViewModel : ObservableObject
         Calculation = new DataTable().Compute(Calculation.Replace("X", "*").Replace("÷", "/").Replace(",", "."), null).ToString();
     }
 
+    // Removes the last character in the calculation.
     void BackSpace()
     {
         Calculation = Calculation.Remove(Calculation.Length - 1, 1);
@@ -70,6 +76,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    // Checks if we can add the operator or should replace the existing selected one.
     private void shouldReplace(string character)
     {
         if (Calculation.EndsWith("÷") || 
