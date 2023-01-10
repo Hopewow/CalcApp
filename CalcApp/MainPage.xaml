@@ -17,7 +17,8 @@
                FontSize="Large"
                HorizontalTextAlignment="End"
                VerticalTextAlignment="Center"
-               Text="{Binding Calculation}">
+               Text="{Binding Calculation}"
+               LineBreakMode="HeadTruncation">
         </Label>
 
         <Button Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Text="C" FontSize="Medium"
