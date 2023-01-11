@@ -21,7 +21,7 @@ public partial class MainViewModel : ObservableObject
     void ButtonHandler(string character)
     {
         // To check if we should override the number or not.
-        first = (Calculation == "0" || Calculation == "∞") ? true : false;
+        first = (Calculation == "0" || Calculation == "∞" || Calculation == "-∞" || Calculation == "NaN") ? true : false;
         // To set to 0 if we have gotten the result of infinite because it can not be calculated on.
         Calculation = (first) ? "0" : Calculation; 
 
@@ -39,8 +39,11 @@ public partial class MainViewModel : ObservableObject
             case "equals":
                 equals();
                 break;
+            case ".":
+                commaHandler(character);
+                break;
             default:
-                if (first && character != ".")
+                if (first)
                 {
                     Calculation = character;
                 } else
@@ -48,6 +51,35 @@ public partial class MainViewModel : ObservableObject
                     Calculation += character;
                 }
                 break;
+        }
+    }
+
+    private void commaHandler(string character)
+    {
+        if (Calculation.EndsWith(".")) { return; };
+
+
+        bool isComma = false;
+
+        foreach (char singleChar in Calculation)
+        {
+            string Char = singleChar.ToString();
+
+            if (Char == ".")
+            {
+                isComma = true;
+            }
+
+            if (Char == "+" || Char == "-" || Char == "÷" || Char == "X")
+            {
+                isComma = false;
+            }
+        }
+       
+
+        if (!isComma)
+        {
+            Calculation += character;
         }
     }
 
@@ -62,7 +94,7 @@ public partial class MainViewModel : ObservableObject
             Calculation = Calculation.Remove(Calculation.Length - 1, 1);
         }
 
-        Calculation = new DataTable().Compute(Calculation.Replace("X", "*").Replace("÷", "/").Replace(",", "."), null).ToString();
+        Calculation = new DataTable().Compute(Calculation.Replace("X", "*").Replace("÷", "/").Replace(",", "."), null).ToString().Replace(",",".");
     }
 
     // Removes the last character in the calculation.
